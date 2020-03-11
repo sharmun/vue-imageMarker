@@ -1,9 +1,10 @@
 export default {
-  props: {},
+  props: {
+  },
   data () {
     return {
-      SVGDefaultScale: 1,
       SVGScale: 1,
+      SVGDefaultScale: 1,
       SVGMaxScale: 5,
       SVGMiniScale: 0.5,
       SVGtranslate: {
@@ -19,11 +20,18 @@ export default {
     handleSVGMouseWheel (e) {
       this.compSVGMouseWheel(e.deltaY < 0)
     },
-    compSVGMouseWheel (isLarge) { // 兼容浏览器鼠标滚动事件
-      if (isLarge) { // 放大
+    compSVGMouseWheel (scrollDetail) { // 兼容浏览器鼠标滚动事件
+      let isLarge = scrollDetail > 0 ? 1 : -1
+      this.zoom(isLarge)
+    },
+    zoom (isLarge) {
+      if (isLarge > 0) { // 放大
         this.SVGScale = Math.min(this.SVGScale + 0.1, this.SVGMaxScale)
-      } else { // 缩小
+      } else if (isLarge < 0) { // 缩小
         this.SVGScale = Math.max(this.SVGScale - 0.1, this.SVGMiniScale)
+      } else {
+        this.initScale()
+        this.initSVGtranslate()
       }
     }
   }

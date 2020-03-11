@@ -21,9 +21,11 @@ export default {
       this.anchorIndex = index
     },
     skewPolygon (e) {
-      let polygontData = this.curEditingGraph.data[this.anchorIndex]
-      polygontData.x += e.movementX / this.SVGScale
-      polygontData.y += e.movementY / this.SVGScale
+      if (this.anchorIndex !== null) {
+        let polygontData = this.curEditingGraph.data[this.anchorIndex]
+        polygontData.x += e.movementX / this.SVGScale
+        polygontData.y += e.movementY / this.SVGScale
+      }
     },
     skewRect (e) {
 

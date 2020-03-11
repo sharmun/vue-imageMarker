@@ -12,6 +12,7 @@
       @mouseup="handleSvgMouseUp"
       @mousemove="handleSVGMousemove"
       @mouseleave="handleSvgMouseLeave"
+      :style="{'cursor': mode ==='svgMoving'? 'move' : mode ==='draw'? 'pointer':'default'}"
     >
       <g>
         <!-- 底图 start-->
@@ -36,6 +37,7 @@
             :painterStyle="circle.style"
             @handleGraphMousedown="handleGraphMousedown('circle',index)"
             @startSkew="startSkew"
+            :style="{'cursor': mode ==='editing'? 'move' : 'default'}"
           />
           <im-rect
             v-for="(rect,index) in rectData"
@@ -49,6 +51,7 @@
             @handleGraphMousedown="handleGraphMousedown('rect', index)"
             @startSkew="startSkew"
             @setAnchorIndex="setAnchorIndex"
+            :style="{'cursor': mode ==='editing'? 'move' : 'default'}"
           />
           <im-polygon
             v-for="(polygon,index) in polygonData"
@@ -56,9 +59,12 @@
             :editable="curEditingGraph.shape==='polygon'&& curEditingGraph.index === index"
             :points="polygon.data"
             :painterStyle="polygon.style"
+            :temp="polygon.hasOwnProperty('temp')"
             @handleGraphMousedown="handleGraphMousedown('polygon',index)"
             @startSkew="startSkew"
             @setAnchorIndex="setAnchorIndex"
+            @drawPolygonFinish="drawPolygonFinish"
+            :style="{'cursor': mode ==='editing'? 'move' : 'default'}"
           />
         </g>
         <!-- graph end-->
@@ -87,73 +93,40 @@ export default {
     imgSrc: String,
     minScale: Number,
     maxScale: Number,
-    pencil: Object
+    pencil: Object,
+    mode: {
+      type: String,
+      defaulf () {
+        return null  // draw-画新graph   editing-编辑现有graph  svgMoving-拖拽整个画布
+      }
+    },
+    rectData: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    circleData: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    polygonData: {
+      type: Array,
+      default () {
+        return []
+      }
+    }
   },
   data () {
     return {
       returnMode: null,
-      mode: 'draw', // draw-画新graph   editing-编辑现有graph  svgMoving-拖拽整个画布
       curEditingGraph: { // 当前正在被编辑的图形
         shape: null,
         index: NaN,
         data: {}
       },
-      polygonData: [
-        {
-          data: [{
-            x: 0,
-            y: 0
-          },
-          {
-            x: 100,
-            y: 100
-          },
-          {
-            x: 0,
-            y: 200
-          }],
-          style: {
-            stroke: "#3388ff",
-            strokeOpacity: "1",
-            strokeWidth: "3",
-            fill: "#3388ff",
-            fillOpacity: "0.2"
-          }
-        }
-      ],
-      rectData: [
-        {
-          data: {
-            x: 0,
-            y: 0,
-            width: 100,
-            height: 100
-          },
-          style: {
-            stroke: "#3388ff",
-            strokeOpacity: "1",
-            strokeWidth: "3",
-            fill: "#3388ff",
-            fillOpacity: "0.2"
-          }
-        }
-      ],
-      circleData: [
-        {
-          data: {
-            x: 200,
-            y: 200,
-            r: 100
-          },
-          style: {
-            stroke: "#3388ff",
-            strokeOpacity: "1",
-            strokeWidth: "3",
-            fill: "#3388ff",
-            fillOpacity: "0.2"
-          }
-        }
-      ],
       loading: true,
       ImContainer: {
         width: 0,

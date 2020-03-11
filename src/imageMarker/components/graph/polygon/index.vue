@@ -1,6 +1,7 @@
 <template>
   <g @mousedown="handleGraphMousedown" :style="{ cursor: editable ?'move':'default' }">
     <polygon
+      v-if="!temp"
       :points="path"
       :stroke="painterStyle.stroke"
       :stroke-opacity="painterStyle.strokeOpacity"
@@ -8,7 +9,16 @@
       :fill="painterStyle.fill"
       :fill-opacity="painterStyle.fillOpacity"
     />
-    <g v-if="editable">
+    <polyline
+      v-else
+      :points="path"
+      :stroke="painterStyle.stroke"
+      :stroke-opacity="painterStyle.strokeOpacity"
+      :stroke-width="painterStyle.strokeWidth"
+      :fill="painterStyle.fill"
+      :fill-opacity="painterStyle.fillOpacity"
+    />
+    <g v-if="editable || temp">
       <circle
         class="anchor"
         v-for="(point,index) in points"
@@ -20,6 +30,7 @@
         :stroke-width="anchorStyle.strokeWidth"
         :fill="anchorStyle.fill"
         @mousedown="handleAnchorMousedown(index)"
+        @click.stop="handleAnchorClick"
       />
     </g>
   </g>
@@ -32,7 +43,8 @@ export default {
   mixins: [mixin],
   props: {
     points: Array,
-    painterStyle: Object
+    painterStyle: Object,
+    temp: Boolean
   },
   computed: {
     path () {
@@ -45,6 +57,11 @@ export default {
   data () {
     return {
 
+    }
+  },
+  methods: {
+    handleAnchorClick () {
+      this.$emit('drawPolygonFinish')
     }
   }
 }

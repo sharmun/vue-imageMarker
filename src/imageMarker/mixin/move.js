@@ -19,9 +19,10 @@ export default {
 
     },
     handleSvgMouseDown (e) {
-      if (e.button === 2) {
+      if (e.button === 2 || this.mode === 'svgMoving') {
+        this.clearCurEditingGraph()
         this.returnMode = this.mode
-        this.mode = 'svgMoving'
+        this.$emit('update:mode', 'svgMoving')
         this.SVGMoving = true
       }
     },
@@ -32,7 +33,7 @@ export default {
     },
     handleSvgMouseUp (e) {
       if (e.button === 2) {
-        this.mode = this.returnMode
+        this.$emit('update:mode', this.returnMode)
       }
       this.SVGMoving = false
       this.graphMoving = false
@@ -108,7 +109,9 @@ export default {
             this.curEditingGraph.data = this.circleData[index].data
             break
           case 'polygon':
-            this.curEditingGraph.data = this.polygonData[index].data
+            if (!this.drawing) {
+              this.curEditingGraph.data = this.polygonData[index].data
+            }
             break
         }
       }
