@@ -93,11 +93,10 @@ export default {
     imgSrc: String,
     minScale: Number,
     maxScale: Number,
-    pencil: Object,
     mode: {
       type: String,
       defaulf () {
-        return null  // draw-画新graph   editing-编辑现有graph  svgMoving-拖拽整个画布
+        return null  // draw-画新graph   editing-编辑现有graph  svgMoving-拖拽整个画布 eraser-擦除
       }
     },
     rectData: {

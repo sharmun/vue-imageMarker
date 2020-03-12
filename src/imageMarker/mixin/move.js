@@ -95,6 +95,8 @@ export default {
     handleGraphMousedown (shape, index) {
       if (this.mode === 'editing') {
         this.setCurEditingGraph(shape, index)
+      } else if (this.mode === 'eraser') {
+        this.deleteGraph(shape, index)
       }
     },
     setCurEditingGraph (shape, index) {
@@ -114,6 +116,20 @@ export default {
             }
             break
         }
+      }
+    },
+    deleteGraph (shape, index) {
+
+      switch (shape) {
+        case 'rect':
+          this.rectData.splice(index, 1)
+          break
+        case 'circle':
+          this.circleData.splice(index, 1)
+          break
+        case 'polygon':
+          this.polygonData.splice(index, 1)
+          break
       }
     },
     clearCurEditingGraph () {

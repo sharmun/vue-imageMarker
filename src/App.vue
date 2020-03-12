@@ -13,6 +13,12 @@
           @click="setMode('svgMoving')"
         ></i>
         <i
+          class="iconfont icon-eraser toolbar__group--item"
+          :class="{'selected': mode==='eraser'}"
+          @click="setMode('eraser')"
+        ></i>
+
+        <i
           class="iconfont icon-xuanze toolbar__group--item"
           :class="{'selected': mode==='editing'}"
           @click="setMode('editing')"
