@@ -9,7 +9,8 @@ export default {
           strokeOpacity: "1",
           strokeWidth: "3",
           fill: "#3388ff",
-          fillOpacity: "0.2"
+          fillOpacity: "0.2",
+          text: ''
         }
       }
     }

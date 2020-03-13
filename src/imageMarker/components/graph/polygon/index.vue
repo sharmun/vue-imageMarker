@@ -1,5 +1,11 @@
 <template>
   <g @mousedown="handleGraphMousedown" :style="{ cursor: editable ?'move':'default' }">
+    <text
+      :x="textX"
+      :y="textY"
+      :fill="painterStyle.stroke"
+      :font-size="painterStyle.fontSize"
+    >{{painterStyle.text}}</text>
     <polygon
       v-if="!temp"
       :points="path"
@@ -17,6 +23,16 @@
       :stroke-width="painterStyle.strokeWidth"
       :fill="painterStyle.fill"
       :fill-opacity="painterStyle.fillOpacity"
+    />
+    <line
+      v-if="temp && painterStyle.shape === 'polygon' && points.length > 0 && offset"
+      :x1="points[points.length -1].x"
+      :y1="points[points.length -1].y"
+      :x2="offset.x"
+      :y2="offset.y"
+      stroke="#3388ff"
+      stroke-width="3"
+      stroke-dasharray="5,5"
     />
     <g v-if="editable || temp">
       <circle
@@ -44,7 +60,8 @@ export default {
   props: {
     points: Array,
     painterStyle: Object,
-    temp: Boolean
+    temp: Boolean,
+    offset: Object
   },
   computed: {
     path () {
@@ -52,6 +69,14 @@ export default {
         return item.x + ' ' + item.y
       })
       return result.join(",")
+    },
+    textX () {
+      let xs = this.points.map(item => { return item.x })
+      return Math.min(...xs)
+    },
+    textY () {
+      let ys = this.points.map(item => { return item.y })
+      return Math.min(...ys)
     }
   },
   data () {

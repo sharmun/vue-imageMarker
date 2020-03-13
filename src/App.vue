@@ -17,7 +17,7 @@
           :class="{'selected': mode==='eraser'}"
           @click="setMode('eraser')"
         ></i>
-
+        <i class="iconfont icon-qingchushujuku toolbar__group--item" @click="clearGraphData"></i>
         <i
           class="iconfont icon-xuanze toolbar__group--item"
           :class="{'selected': mode==='editing'}"
@@ -46,6 +46,14 @@
             <div>
               fillOpacity:
               <input type="number" v-model="painterStyle.fillOpacity" />
+            </div>
+            <div>
+              text:
+              <input type="text" v-model="painterStyle.text" />
+            </div>
+            <div>
+              fontSize:
+              <input type="number" v-model="painterStyle.fontSize" />
             </div>
           </div>
         </i>
@@ -94,7 +102,9 @@ export default {
         strokeOpacity: "1",
         strokeWidth: "3",
         fill: "#3388ff",
-        fillOpacity: "0.2"
+        fillOpacity: "0.2",
+        text: 'hi',
+        fontSize: 50
       },
       polygonData: [
         // {
@@ -155,6 +165,11 @@ export default {
     }
   },
   methods: {
+    clearGraphData () {
+      this.rectData = []
+      this.circleData = []
+      this.polygonData = []
+    },
     setMode (mode) {
       this.clearShape()
       this.mode = mode

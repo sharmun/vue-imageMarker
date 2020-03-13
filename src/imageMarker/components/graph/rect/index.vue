@@ -1,5 +1,11 @@
 <template>
   <g @mousedown="handleGraphMousedown" :style="{ cursor: editable ?'move':'default' }">
+    <text
+      :x="x"
+      :y="y-10"
+      :fill="painterStyle.stroke"
+      :font-size="painterStyle.fontSize"
+    >{{painterStyle.text}}</text>
     <path
       :d="`M${x} ${y}L${x+width} ${y}L${x+width} ${y+height}L${x} ${y+height}Z`"
       :stroke="painterStyle.stroke"

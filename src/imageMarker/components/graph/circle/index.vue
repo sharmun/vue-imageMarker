@@ -1,5 +1,11 @@
 <template>
   <g @mousedown="handleGraphMousedown" :style="{ cursor: editable ?'move':'default' }">
+    <text
+      :x="x"
+      :y="y-r-10"
+      :fill="painterStyle.stroke"
+      :font-size="painterStyle.fontSize"
+    >{{painterStyle.text}}</text>
     <circle
       :cx="x"
       :cy="y"

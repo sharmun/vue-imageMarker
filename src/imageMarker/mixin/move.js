@@ -11,7 +11,9 @@ export default {
   },
   methods: {
     handleSVGClick (e) {
+      console.log('handleSVGClick', this.mode)
       if (this.mode === 'draw') {
+        console.log('adsadasdsdasdsadsadsdasdas')
         this.drawGraph(e)
       }
     },
@@ -19,11 +21,17 @@ export default {
 
     },
     handleSvgMouseDown (e) {
-      if (e.button === 2 || this.mode === 'svgMoving') {
-        this.clearCurEditingGraph()
-        this.returnMode = this.mode
-        this.$emit('update:mode', 'svgMoving')
-        this.SVGMoving = true
+      if (e.button === 2) {
+        if (this.mode === 'draw') {
+          if (this.drawing) {
+            this.cancelDraw()
+          }
+        } else {
+          this.clearCurEditingGraph()
+          this.returnMode = this.mode
+          this.$emit('update:mode', 'svgMoving')
+          this.SVGMoving = true
+        }
       }
     },
     handleSvgMouseLeave () {
@@ -32,7 +40,7 @@ export default {
       this.stopSkew()
     },
     handleSvgMouseUp (e) {
-      if (e.button === 2) {
+      if (e.button === 2 && this.mode !== 'draw') {
         this.$emit('update:mode', this.returnMode)
       }
       this.SVGMoving = false
@@ -57,6 +65,10 @@ export default {
               break
             case 'polygon':
               this.skewPolygon(e)
+              this.offset = {
+                x: e.offsetX,
+                y: e.offsetY
+              }
               break
           }
         } else if (this.graphMoving) {
@@ -141,6 +153,20 @@ export default {
     },
     handleGraphMouseup () {
       this.graphMoving = false
+    },
+    cancelDraw () {
+      switch (this.curEditingGraph.shape) {
+        case 'rect':
+          this.rectData.splice(this.rectData.length - 1, 1)
+          break
+        case 'circle':
+          this.circleData.splice(this.circleData.length - 1, 1)
+          break
+        case 'polygon':
+          this.polygonData.splice(this.polygonData.length - 1, 1)
+          break
+      }
+      this.drawing = false
     }
   }
 }

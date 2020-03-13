@@ -1,12 +1,28 @@
 export default {
   props: {
+    SVGMaxScale: {
+      type: Number,
+      default () {
+        return 5
+      }
+    },
+    SVGMiniScale: {
+      type: Number,
+      default () {
+        return 0.5
+      }
+    },
+    stepScale: {
+      type: Number,
+      default () {
+        return 0.1
+      }
+    },
   },
   data () {
     return {
       SVGScale: 1,
       SVGDefaultScale: 1,
-      SVGMaxScale: 5,
-      SVGMiniScale: 0.5,
       SVGtranslate: {
         x: 0,
         y: 0
@@ -26,9 +42,9 @@ export default {
     },
     zoom (isLarge) {
       if (isLarge > 0) { // 放大
-        this.SVGScale = Math.min(this.SVGScale + 0.1, this.SVGMaxScale)
+        this.SVGScale = Math.min(this.SVGScale + this.stepScale, this.SVGMaxScale)
       } else if (isLarge < 0) { // 缩小
-        this.SVGScale = Math.max(this.SVGScale - 0.1, this.SVGMiniScale)
+        this.SVGScale = Math.max(this.SVGScale - this.stepScale, this.SVGMiniScale)
       } else {
         this.initScale()
         this.initSVGtranslate()

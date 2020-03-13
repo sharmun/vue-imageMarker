@@ -28,7 +28,6 @@ export default {
       }
     },
     skewRect (e) {
-
       let rectData = this.curEditingGraph.data
       switch (this.anchorIndex) {
         case 0:

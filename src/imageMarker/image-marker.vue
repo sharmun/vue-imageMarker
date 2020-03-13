@@ -60,6 +60,7 @@
             :points="polygon.data"
             :painterStyle="polygon.style"
             :temp="polygon.hasOwnProperty('temp')"
+            :offset="offset"
             @handleGraphMousedown="handleGraphMousedown('polygon',index)"
             @startSkew="startSkew"
             @setAnchorIndex="setAnchorIndex"
@@ -120,6 +121,7 @@ export default {
   },
   data () {
     return {
+      offset: null,
       returnMode: null,
       curEditingGraph: { // 当前正在被编辑的图形
         shape: null,
@@ -209,5 +211,8 @@ export default {
 }
 .anchor {
   cursor: pointer;
+}
+text {
+  user-select: none;
 }
 </style>
