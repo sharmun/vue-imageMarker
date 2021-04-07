@@ -1,6 +1,7 @@
 <template>
   <g @mousedown="handleGraphMousedown" :style="{ cursor: editable ?'move':'default' }">
     <text
+      v-show="showText"
       :x="textX"
       :y="textY"
       :fill="painterStyle.stroke"
@@ -31,7 +32,7 @@
       :x2="offset.x"
       :y2="offset.y"
       stroke="#3388ff"
-      stroke-width="3"
+      :stroke-width="painterStyle.strokeWidth"
       stroke-dasharray="5,5"
     />
     <g v-if="editable || temp">
@@ -41,7 +42,7 @@
         :key="index"
         :cx="point.x"
         :cy="point.y"
-        :r="anchorStyle.width"
+        :r="painterStyle.strokeWidth"
         :stroke="anchorStyle.stroke"
         :stroke-width="anchorStyle.strokeWidth"
         :fill="anchorStyle.fill"
@@ -61,7 +62,8 @@ export default {
     points: Array,
     painterStyle: Object,
     temp: Boolean,
-    offset: Object
+    offset: Object,
+    SVGScale: Number
   },
   computed: {
     path () {

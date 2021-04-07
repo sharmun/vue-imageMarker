@@ -2,25 +2,40 @@
   <div style="width: 100%;height:100%;margin: 0 auto;">
     <div class="toolbar">
       <div class="toolbar__group">
-        <i class="iconfont icon-fangda toolbar__group--item" @click="zoom(1)"></i>
-        <i class="iconfont icon-suoxiao toolbar__group--item" @click="zoom(-1)"></i>
-        <i class="iconfont icon-huanyuanpingmudaxiao toolbar__group--item" @click="zoom(0)"></i>
+        <i class="iconfont icon-fangda toolbar__group--item" @click="zoom(1)" title="放大"></i>
+        <i class="iconfont icon-suoxiao toolbar__group--item" @click="zoom(-1)" title="缩小"></i>
+        <i
+          class="iconfont icon-huanyuanpingmudaxiao toolbar__group--item"
+          @click="zoom(0)"
+          title="适应屏幕"
+        ></i>
+        <i
+          class="iconfont icon-yidong toolbar__group--item"
+          :class="{ selected: mode === 'svgMoving' }"
+          @click="setMode('svgMoving')"
+          title="移动画布"
+        ></i>
+        <i
+          class="iconfont icon-biaoqianguanli toolbar__group--item"
+          @click="toggleShowText"
+          title="隐藏标签"
+        ></i>
       </div>
       <div class="toolbar__group">
         <i
-          class="iconfont icon-yidong toolbar__group--item"
-          :class="{'selected': mode==='svgMoving'}"
-          @click="setMode('svgMoving')"
-        ></i>
-        <i
+          title="删除"
           class="iconfont icon-eraser toolbar__group--item"
-          :class="{'selected': mode==='eraser'}"
+          :class="{ selected: mode === 'eraser' }"
           @click="setMode('eraser')"
         ></i>
-        <i class="iconfont icon-qingchushujuku toolbar__group--item" @click="clearGraphData"></i>
+        <i
+          title="清空"
+          class="iconfont icon-qingchushujuku toolbar__group--item"
+          @click="clearGraphData"
+        ></i>
         <i
           class="iconfont icon-xuanze toolbar__group--item"
-          :class="{'selected': mode==='editing'}"
+          :class="{ selected: mode === 'editing' }"
           @click="setMode('editing')"
         ></i>
       </div>
@@ -58,19 +73,34 @@
           </div>
         </i>
         <i
+          title="矩形"
           class="iconfont icon-juxing toolbar__group--item"
-          :class="{'selected': painterStyle.shape==='rect'}"
+          :class="{ selected: painterStyle.shape === 'rect' }"
           @click="setShape('rect')"
         ></i>
         <i
+          title="椭圆"
           class="iconfont icon-icon-yuanxk toolbar__group--item"
-          :class="{'selected': painterStyle.shape==='circle'}"
+          :class="{ selected: painterStyle.shape === 'circle' }"
           @click="setShape('circle')"
         ></i>
         <i
+          title="多边形"
           class="iconfont icon-draw-polygon-solid toolbar__group--item"
-          :class="{'selected': painterStyle.shape==='polygon'}"
+          :class="{ selected: painterStyle.shape === 'polygon' }"
           @click="setShape('polygon')"
+        ></i>
+        <i
+          title="直线"
+          class="iconfont icon-zhixian-xuanzhong toolbar__group--item"
+          :class="{ selected: painterStyle.shape === 'line' }"
+          @click="setShape('line')"
+        ></i>
+        <i
+          title="涂抹"
+          class="iconfont icon-quxian-xuanzhong toolbar__group--item"
+          :class="{ selected: painterStyle.shape === 'daub' }"
+          @click="setShape('daub')"
         ></i>
       </div>
     </div>
@@ -80,22 +110,28 @@
       :img-src="imgSrc"
       :mode.sync="mode"
       :painterStyle="painterStyle"
-      :rectData="rectData"
-      :circleData="circleData"
-      :polygonData="polygonData"
+      :rectData.sync="rectData"
+      :circleData.sync="circleData"
+      :polygonData.sync="polygonData"
+      :daubData.sync="daubData"
+      :lineData.sync="lineData"
+      :showText="showText"
+      @imgOnload="imgOnload"
     ></image-marker>
   </div>
 </template>
 
 <script>
-import imageMarker from './imageMarker/image-marker'
+import imageMarker from "./imageMarker/image-marker";
+
 export default {
-  name: 'app',
+  name: "app",
   components: { imageMarker },
   data () {
     return {
-      imgSrc: "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1583387735060&di=00a8267ee16526e3436e0aa73b299564&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201510%2F13%2F20151013170839_yuZjk.jpeg",
+      imgSrc:"src/assets/bg.jpg",
       mode: null,
+      showText: true,
       painterStyle: {
         shape: null,
         stroke: "#3388ff",
@@ -103,8 +139,8 @@ export default {
         strokeWidth: "3",
         fill: "#3388ff",
         fillOpacity: "0.2",
-        text: 'hi',
-        fontSize: 50
+        text: "hi",
+        fontSize: 10
       },
       polygonData: [
         // {
@@ -129,6 +165,23 @@ export default {
         //   }
         // }
       ],
+      lineData: [
+        // {
+        //   data: {
+        //     x1: 0,
+        //     y1: 0,
+        //     x2: 1000,
+        //     y2: 1000
+        //   },
+        //   style: {
+        //     stroke: "#0078EC",
+        //     strokeOpacity: "1",
+        //     strokeWidth: "3",
+        //     fill: "transparent",
+        //     fillOpacity: "0.2"
+        //   }
+        // }
+      ],
       rectData: [
         // {
         //   data: {
@@ -138,10 +191,10 @@ export default {
         //     height: 100
         //   },
         //   style: {
-        //     stroke: "#ffd717",
+        //     stroke: "#0078EC",
         //     strokeOpacity: "1",
         //     strokeWidth: "3",
-        //     fill: "#ffd717",
+        //     fill: "transparent",
         //     fillOpacity: "0.2"
         //   }
         // }
@@ -151,7 +204,8 @@ export default {
         //   data: {
         //     x: 200,
         //     y: 200,
-        //     r: 100
+        //     rx: 100,
+        //     ry: 200
         //   },
         //   style: {
         //     stroke: "#3388ff",
@@ -161,34 +215,77 @@ export default {
         //     fillOpacity: "0.2"
         //   }
         // }
+      ],
+      daubData: [
+        {
+          data: [
+            {
+              x: 50,
+              y: 150
+            },
+            {
+              x: 250,
+              y: 150
+            },
+            {
+              x: 300,
+              y: 400
+            }
+          ],
+          style: {
+            stroke: "white",
+            strokeOpacity: "1",
+            strokeWidth: "30",
+            fill: "transparent",
+            fillOpacity: "0.2"
+          }
+        }
       ]
-    }
+    };
+  },
+  mounted () {
+    let that = this;
+    // setTimeout(function () {
+    //   that.imgSrc = 'http://192.168.20.104:81/indai/template/originalPictureRootPath/74b3b8ecca0e4ca7a519774162008728.jpg'
+    // }, 2000)
   },
   methods: {
+    toggleShowText () {
+      this.showText = !this.showText
+    },
+    getCut () {
+      console.log(this.$refs["imageMarker"].curEditingGraph.data);
+    },
+    imgOnload (val) {
+      // this.rectData[0].data.width = val.width
+      // this.rectData[0].data.height = val.height
+      // this.mode = 'editing'
+      // this.$refs['imageMarker'].curEditingGraph.shape = "rect"
+      // this.$refs['imageMarker'].curEditingGraph.index = 0
+      // this.$refs['imageMarker'].curEditingGraph.data = this.rectData[0]
+    },
     clearGraphData () {
-      this.rectData = []
-      this.circleData = []
-      this.polygonData = []
+      this.$refs['imageMarker'].clearAll()
     },
     setMode (mode) {
-      this.clearShape()
-      this.mode = mode
+      this.clearShape();
+      this.mode = mode;
     },
     clearShape () {
-      this.painterStyle.shape = null
+      this.painterStyle.shape = null;
     },
     setShape (shape) {
-      this.setMode('draw')
-      this.painterStyle.shape = shape
+      this.setMode("draw");
+      this.painterStyle.shape = shape;
     },
     zoom (isLarge) {
-      this.$refs['imageMarker'].zoom(isLarge)
+      this.$refs["imageMarker"].zoom(isLarge);
     }
   }
-}
+};
 </script>
 
-<style>
+<style lang="css">
 html,
 body {
   padding: 0;
@@ -226,7 +323,7 @@ body {
   border-radius: 4px;
   margin-bottom: 15px;
   width: 30px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.8);
 }
 .toolbar__group--item {
   cursor: pointer;

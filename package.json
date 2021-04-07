@@ -11,6 +11,9 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "imports-loader": "^1.1.0",
+    "snapsvg": "^0.5.1",
+    "snapsvg-cjs": "0.0.6",
     "vue": "^2.5.11"
   },
   "browserslist": [
@@ -26,6 +29,8 @@
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.4",
+    "openseadragon": "^2.4.2",
+    "openseadragon-annotations": "^1.0.5",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
